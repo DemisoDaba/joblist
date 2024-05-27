@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Job Listings</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+    <header class="header">
+  
+    </header>
+    <div id="search-form">
+        <input type="text" id="search-input" placeholder="Search by job title">
+        <button onclick="searchJobs()">Search</button>
+    </div>
+    <div id="job-listings"></div>
+    <footer>
+        <p>&copy; 2024 Remote Job Listings. All rights reserved.</p>
+    </footer>
+	
+	<!-- Load the Google AdSense JavaScript asynchronously -->
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8979505822041533"
+		crossorigin="anonymous"></script>
+
+	<!-- Define the AdSense ad unit -->
+	<ins class="adsbygoogle"
+		style="display:block"
+		data-ad-format="fluid" <!-- Specify the ad format (fluid, responsive, etc.) -->
+		data-ad-layout-key="-gw-3+1f-3d+2z" <!-- Specify the ad layout key -->
+		data-ad-client="ca-pub-8979505822041533" <!-- Your AdSense publisher ID -->
+		data-ad-slot="2544862466"></ins> <!-- Your AdSense ad slot ID -->
+
+	<!-- Trigger the AdSense ad -->
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchJobs();
+        });
+
+        function fetchJobs() {
+            const apiUrl = 'https://remotive.io/api/remote-jobs';
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => displayJobs(data.jobs))
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function displayJobs(jobs) {
+            const jobListings = document.getElementById('job-listings');
+            jobListings.innerHTML = ''; // Clear previous results
+
+            // Prioritize computer/software related jobs
+            const prioritizedJobs = jobs.filter(job => 
+                job.category.toLowerCase().includes('software') ||
+                job.category.toLowerCase().includes('computer') ||
+                job.title.toLowerCase().includes('software') ||
+                job.title.toLowerCase().includes('developer') ||
+                job.title.toLowerCase().includes('engineer')
+            );
+
+            const otherJobs = jobs.filter(job => !prioritizedJobs.includes(job));
+            const sortedJobs = [...prioritizedJobs, ...otherJobs];
+
+            sortedJobs.forEach(job => {
+                const jobElement = document.createElement('div');
+                jobElement.classList.add('job');
+                if (job.featured) {
+                    jobElement.classList.add('featured');
+                }
+                jobElement.innerHTML = `
+                    <h2>${job.title}</h2>
+                    <p><strong>Company:</strong> ${job.company_name}</p>
+                    <p><strong>Category:</strong> ${job.category}</p>
+                    <p><strong>Location:</strong> ${job.candidate_required_location}</p>
+                    <p><strong>Publication Date:</strong> ${new Date(job.publication_date).toLocaleDateString()}</p>
+                    <p class="description">${job.description}</p>
+                    <div class="buttons">
+                        <a href="${job.url}" target="_blank" class="apply-btn">Apply</a>
+                        <a href="#" class="see-more-btn" onclick="toggleDescription(event)">See More</a>
+                    </div>
+                `;
+                jobListings.appendChild(jobElement);
+            });
+        }
+
+        function toggleDescription(event) {
+            event.preventDefault();
+            const jobElement = event.target.closest('.job');
+            const description = jobElement.querySelector('.description');
+            const seeMoreBtn = jobElement.querySelector('.see-more-btn');
+
+            if (description.classList.contains('expanded')) {
+                description.classList.remove('expanded');
+                jobElement.style.height = '360px';
+                seeMoreBtn.textContent = 'See More';
+            } else {
+                description.classList.add('expanded');
+                jobElement.style.height = 'auto';
+                seeMoreBtn.textContent = 'See Less';
+            }
+        }
+
+        function searchJobs() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const jobTitles = document.querySelectorAll('.job h2');
+            
+            jobTitles.forEach(title => {
+                const jobElement = title.closest('.job');
+                const jobTitle = title.textContent.toLowerCase();
+                if (jobTitle.includes(searchInput)) {
+                    jobElement.style.display = 'block';
+                } else {
+                    jobElement.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
