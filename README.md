@@ -17,6 +17,7 @@ To run this project locally, follow these steps:
 
 1. Clone this repository to your local machine.
 2. Open the `index.html` file in your preferred web browser.
+3. or Deployed here [this is website](https://demisodaba.github.io/joblist/)
 
 ## Usage
 
