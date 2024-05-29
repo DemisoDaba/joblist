@@ -2,6 +2,16 @@
 
 Welcome to Remote Job Listings, a web application that allows you to search and view remote job opportunities.
 
+### 🌟 Look at overview of web
+<p align="center"> 
+  <kbd>
+    <a href="https://DemisoDaba/joblist" target="_blank"><img src="/sample.gif" alt="Portfolio Preview">
+  </a>
+  </kbd>
+</p>
+
+
+
 ## Features
 
 - Fetches remote job listings from the Remotive API.
